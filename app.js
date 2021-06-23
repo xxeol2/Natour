@@ -122,8 +122,25 @@ app.patch('/api/v1/tours/:id', (req,res)=> {
         data: {
             tour : '<Updated tour here...>'
         }
-    })
-})
+    });
+});
+
+app.delete('/api/v1/tours/:id', (req,res)=> {
+    // 존재하는 ID인지 확인 -> 없으면 404 error
+    if(req.params.id * 1 > tours.length) {
+        return res.status(404).json({
+            status : 'fail',
+            message : 'Invalid ID'
+        });
+    }
+
+    // 204 -> no Content
+    res.status(204).json({
+        status: 'success',
+        data: null // 삭제해서 no longer exist
+    });
+});
+
 
 const port = 3000;
 // http 일 때랑 거의 비슷
