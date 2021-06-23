@@ -4,9 +4,11 @@ const express = require('express');
 
 const app = express();
 
-app.use(express.json());
-// express.json() 이 middleware이다
+
+// express.json()이 middleware이다
 // request와 response 사이에 stand 해서 middleware
+app.use(express.json());
+
 
 // // root URL '/'
 // // get : http method
@@ -105,7 +107,23 @@ app.post('/api/v1/tours', (req,res) => {
     // res.send('Done');
 });
 
+app.patch('/api/v1/tours/:id', (req,res)=> {
 
+    // 존재하는 ID인지 확인 -> 없으면 404 error
+    if(req.params.id * 1 > tours.length) {
+        return res.status(404).json({
+            status : 'fail',
+            message : 'Invalid ID'
+        });
+    }
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            tour : '<Updated tour here...>'
+        }
+    })
+})
 
 const port = 3000;
 // http 일 때랑 거의 비슷
