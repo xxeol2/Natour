@@ -174,7 +174,7 @@ const deleteUser = (req, res) => {
 
 
 
-// ===============================
+// =================================================================
 // 3) ROUTES
 
 
@@ -184,31 +184,39 @@ const deleteUser = (req, res) => {
 // app.patch('/api/v1/tours/:id', updateTour);
 // app.delete('/api/v1/tours/:id',deleteTour);
 
-// 이 모든게 middleware function
-app
-    .route('/api/v1/tours')
+
+
+// tourRouter가 real middleware이다 -> app 대신 tourRouter 사용
+const tourRouter = express.Router();
+const userRouter = express.Router();
+
+tourRouter
+    .route('/') // api/v1/tours 를 뜻한다
     .get(getAllTours)
     .post(createTour);
 
-app
-    .route('/api/v1/tours/:id')
+tourRouter
+    .route('/:id') // api/v1/tours/:id 를 뜻한다
     .get(getTour)
     .patch(updateTour)
     .delete(deleteTour);
 
 
-app
-    .route('/api/v1/users')
+
+userRouter
+    .route('/')
     .get(getAllUsers)
     .post(createUser);
 
-app
-    .route('/api/v1/users/:id')
+userRouter
+    .route('/:id')
     .get(getUser)
     .patch(updateUser)
     .delete(deleteUser);
 
-
+// Mounting Router 라 부른다
+app.use('/api/v1/tours', tourRouter); // parentRoot : /api/v1/tours
+app.use('/api/v1/users', userRouter); // parentRoot : /api/v1/users
 
 // =================================================================
 // 4) START SERVER
