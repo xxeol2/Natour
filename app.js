@@ -45,6 +45,39 @@ app.get('/api/v1/tours', (req,res) => {
     });
 });
 
+
+app.get('/api/v1/tours/:id', (req,res) => {
+    console.log(req.params.id);
+
+    const id = req.params.id * 1; // [convert] string -> num
+
+    // if(id > tours.length) {
+    //     return res.status(404).json({
+    //         status : 'fail',
+    //         message : 'Invalid ID'
+    //     });
+    // }
+
+    const tour = tours.find(el => el.id === id); // tours에서 el.id가 id와 같은것들만 찾음
+
+    if(!tour) {
+        return res.status(404).json({
+            status : 'fail',
+            message : 'Invalid ID'
+        });
+    }
+
+    res.status(200).json({
+        status: 'success',
+        data : {
+            tour
+        }
+    });
+});
+
+
+
+
 // URL은 GET과 같다
 // http method 만 get 에서 post 로 변경
 app.post('/api/v1/tours', (req,res) => {
@@ -71,6 +104,7 @@ app.post('/api/v1/tours', (req,res) => {
     });
     // res.send('Done');
 });
+
 
 
 const port = 3000;
