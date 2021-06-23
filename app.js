@@ -8,11 +8,14 @@ const app = express();
 // =================================================================
 // 1) MIDDLEWARES
 
+// logging method -> 요청 기록 남기는 middleware
 app.use(morgan('dev'));
 
 // express.json()이 middleware이다
 // request와 response 사이에 stand 해서 middleware
 app.use(express.json());
+
+
 
 
 // middleware function의 3rd argument로 next Function
@@ -128,16 +131,58 @@ const deleteTour = (req,res)=> {
     });
 };
 
-// app.get('/api/v1/tours', getAllTours);
-// app.get('/api/v1/tours/:id', getTour);
-// app.post('/api/v1/tours', createTour);
-// app.patch('/api/v1/tours/:id', updateTour);
-// app.delete('/api/v1/tours/:id',deleteTour);
+const getAllUsers = (req, res) => {
+    res.status(500).json({
+        json: 'error',
+        message: 'This route is not yet defined'
+    });
+
+};
+
+const getUser = (req, res) => {
+    res.status(500).json({
+        json: 'error',
+        message: 'This route is not yet defined'
+    });
+
+};
+
+const createUser = (req, res) => {
+    res.status(500).json({
+        json: 'error',
+        message: 'This route is not yet defined'
+    });
+
+};
+
+const updateUser = (req, res) => {
+    res.status(500).json({
+        json: 'error',
+        message: 'This route is not yet defined'
+    });
+};
+
+const deleteUser = (req, res) => {
+    res.status(500).json({
+        json: 'error',
+        message: 'This route is not yet defined'
+    });
+
+};
+
+
+
 
 
 // ===============================
 // 3) ROUTES
 
+
+// app.get('/api/v1/tours', getAllTours);
+// app.get('/api/v1/tours/:id', getTour);
+// app.post('/api/v1/tours', createTour);
+// app.patch('/api/v1/tours/:id', updateTour);
+// app.delete('/api/v1/tours/:id',deleteTour);
 
 // 이 모든게 middleware function
 app
@@ -150,6 +195,19 @@ app
     .get(getTour)
     .patch(updateTour)
     .delete(deleteTour);
+
+
+app
+    .route('/api/v1/users')
+    .get(getAllUsers)
+    .post(createUser);
+
+app
+    .route('/api/v1/users/:id')
+    .get(getUser)
+    .patch(updateUser)
+    .delete(deleteUser);
+
 
 
 // =================================================================
