@@ -1,7 +1,6 @@
 // app.js
 const fs = require('fs');
 const express = require('express');
-
 const app = express();
 
 
@@ -9,35 +8,11 @@ const app = express();
 // request와 response 사이에 stand 해서 middleware
 app.use(express.json());
 
-
-// // root URL '/'
-// // get : http method
-// app.get('/', (req, res) => {
-//     // res.status(200).json("Hello from the server side!!");
-
-//     // json을 response로 보내기
-//     res
-//     .status(200)
-//     .json({message:'Hello from the server side!', app:'Natours'});
-//     // status 200 은 default 값이다
-// });
-
-
-// app.post('/', (req,res) => {
-//     res.send('You can post to this endpoint...');
-// })
-
-
-
-
 const tours = JSON.parse(
     fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
 
-
-// v1 으로 version 나누기
-// 다른 버전 api 만들고싶으면 v2 로 만들고 v1 안건드려두됨
-app.get('/api/v1/tours', (req,res) => {
+const getAllTours = (req,res) => {
     res.status(200).json({
         status: 'success',
         results: tours.length, // multiple object들을 array로 보낼 때만 사용
@@ -45,23 +20,13 @@ app.get('/api/v1/tours', (req,res) => {
             tours //원래 tours:tours 인데 이름 같아서 생략
         }
     });
-});
+};
 
-
-app.get('/api/v1/tours/:id', (req,res) => {
+const getTour = (req,res) => {
     console.log(req.params.id);
 
     const id = req.params.id * 1; // [convert] string -> num
-
-    // if(id > tours.length) {
-    //     return res.status(404).json({
-    //         status : 'fail',
-    //         message : 'Invalid ID'
-    //     });
-    // }
-
     const tour = tours.find(el => el.id === id); // tours에서 el.id가 id와 같은것들만 찾음
-
     if(!tour) {
         return res.status(404).json({
             status : 'fail',
@@ -75,14 +40,9 @@ app.get('/api/v1/tours/:id', (req,res) => {
             tour
         }
     });
-});
+};
 
-
-
-
-// URL은 GET과 같다
-// http method 만 get 에서 post 로 변경
-app.post('/api/v1/tours', (req,res) => {
+const createTour = (req,res) => {
     // console.log(req.body);
 
     const newId = tours[tours.length - 1].id + 1;
@@ -105,10 +65,9 @@ app.post('/api/v1/tours', (req,res) => {
         // 201 -> created
     });
     // res.send('Done');
-});
+};
 
-app.patch('/api/v1/tours/:id', (req,res)=> {
-
+const updateTour = (req,res)=> {
     // 존재하는 ID인지 확인 -> 없으면 404 error
     if(req.params.id * 1 > tours.length) {
         return res.status(404).json({
@@ -123,9 +82,9 @@ app.patch('/api/v1/tours/:id', (req,res)=> {
             tour : '<Updated tour here...>'
         }
     });
-});
+};
 
-app.delete('/api/v1/tours/:id', (req,res)=> {
+const deleteTour = (req,res)=> {
     // 존재하는 ID인지 확인 -> 없으면 404 error
     if(req.params.id * 1 > tours.length) {
         return res.status(404).json({
@@ -139,8 +98,25 @@ app.delete('/api/v1/tours/:id', (req,res)=> {
         status: 'success',
         data: null // 삭제해서 no longer exist
     });
-});
+};
 
+// app.get('/api/v1/tours', getAllTours);
+// app.get('/api/v1/tours/:id', getTour);
+// app.post('/api/v1/tours', createTour);
+// app.patch('/api/v1/tours/:id', updateTour);
+// app.delete('/api/v1/tours/:id',deleteTour);
+
+
+app
+    .route('/api/v1/tours')
+    .get(getAllTours)
+    .post(createTour);
+
+app
+    .route('/api/v1/tours/:id')
+    .get(getTour)
+    .patch(updateTour)
+    .delete(deleteTour);
 
 const port = 3000;
 // http 일 때랑 거의 비슷
