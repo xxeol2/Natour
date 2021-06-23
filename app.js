@@ -1,7 +1,14 @@
 // app.js
 const fs = require('fs');
 const express = require('express');
+const morgan = require('morgan');
+
 const app = express();
+
+// =================================================================
+// 1) MIDDLEWARES
+
+app.use(morgan('dev'));
 
 // express.json()이 middleware이다
 // request와 response 사이에 stand 해서 middleware
@@ -25,6 +32,10 @@ app.use((req, res, next) => {
 const tours = JSON.parse(
     fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
+
+
+// =================================================================
+// 2) ROUTE HANDLERS
 
 const getAllTours = (req,res) => {
     console.log(req.requestTime);
@@ -124,6 +135,10 @@ const deleteTour = (req,res)=> {
 // app.delete('/api/v1/tours/:id',deleteTour);
 
 
+// ===============================
+// 3) ROUTES
+
+
 // 이 모든게 middleware function
 app
     .route('/api/v1/tours')
@@ -135,6 +150,11 @@ app
     .get(getTour)
     .patch(updateTour)
     .delete(deleteTour);
+
+
+// =================================================================
+// 4) START SERVER
+
 
 const port = 3000;
 // http 일 때랑 거의 비슷
