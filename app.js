@@ -3,18 +3,35 @@ const fs = require('fs');
 const express = require('express');
 const app = express();
 
-
 // express.json()이 middleware이다
 // request와 response 사이에 stand 해서 middleware
 app.use(express.json());
+
+
+// middleware function의 3rd argument로 next Function
+app.use((req, res, next) => {
+    console.log('Hello from the middleware 🤗');
+    
+    // 모든 middle ware에 next 써주는거 잊으면 안됨
+    next();
+});
+
+app.use((req, res, next) => {
+    req.requestTime = new Date().toISOString();
+
+    next();
+});
 
 const tours = JSON.parse(
     fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
 
 const getAllTours = (req,res) => {
+    console.log(req.requestTime);
+
     res.status(200).json({
         status: 'success',
+        requestedAt: req.requestTime,
         results: tours.length, // multiple object들을 array로 보낼 때만 사용
         data: {
             tours //원래 tours:tours 인데 이름 같아서 생략
@@ -107,6 +124,7 @@ const deleteTour = (req,res)=> {
 // app.delete('/api/v1/tours/:id',deleteTour);
 
 
+// 이 모든게 middleware function
 app
     .route('/api/v1/tours')
     .get(getAllTours)
