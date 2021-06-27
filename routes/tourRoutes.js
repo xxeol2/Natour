@@ -5,6 +5,7 @@ const tourController = require('./../controllers/tourController')
 // tourRouter가 real middleware이다 -> app 대신 tourRouter 사용
 const router = express.Router();
 
+router.param('id', tourController.checkID);
 
 router
     .route('/') // api/v1/tours 를 뜻한다

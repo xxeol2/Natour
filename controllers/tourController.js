@@ -5,6 +5,21 @@ const tours = JSON.parse(
     fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 );
 
+// 존재하는 ID인지 check -> 없으면 404 error
+exports.checkID = (req, res, next, val) => {
+    console.log(`Tour id is : ${val}`);
+
+    // return과 next 매우 중요
+    // return 없으면 next로 가서 코드 쭉쭉 -> another response
+    if(req.params.id * 1 > tours.length) {
+        return res.status(404).json({
+            status : 'fail',
+            message : 'Invalid ID'
+        });
+    }
+    next();
+}
+
 exports.getAllTours = (req,res) => {
     console.log(req.requestTime);
 
@@ -19,16 +34,11 @@ exports.getAllTours = (req,res) => {
 };
 
 exports.getTour = (req,res) => {
-    console.log(req.params.id);
+    // console.log(req.params.id);
 
     const id = req.params.id * 1; // [convert] string -> num
     const tour = tours.find(el => el.id === id); // tours에서 el.id가 id와 같은것들만 찾음
-    if(!tour) {
-        return res.status(404).json({
-            status : 'fail',
-            message : 'Invalid ID'
-        });
-    }
+
 
     res.status(200).json({
         status: 'success',
@@ -64,13 +74,6 @@ exports.createTour = (req,res) => {
 };
 
 exports.updateTour = (req,res)=> {
-    // 존재하는 ID인지 확인 -> 없으면 404 error
-    if(req.params.id * 1 > tours.length) {
-        return res.status(404).json({
-            status : 'fail',
-            message : 'Invalid ID'
-        });
-    }
 
     res.status(200).json({
         status: 'success',
@@ -81,13 +84,10 @@ exports.updateTour = (req,res)=> {
 };
 
 exports.deleteTour = (req,res)=> {
-    // 존재하는 ID인지 확인 -> 없으면 404 error
-    if(req.params.id * 1 > tours.length) {
-        return res.status(404).json({
-            status : 'fail',
-            message : 'Invalid ID'
-        });
-    }
+    res.status(204).json({
+        status: 'success',
+        data:null
+    });
 };
 
 // export 하나 아니라서 module.export 사용 불가 → export object에 함수들 다 넣어주기
